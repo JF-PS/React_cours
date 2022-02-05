@@ -1,8 +1,22 @@
 import React from 'react';
+import seasonPicture from "../assets/pictures/ilustation.png";
+import "../style/seasonStyle.css";
 
-const modal = (props) => {
-  const {children, styled} = props;
-  return <div style={styled}>{children}</div>;
+const Modal = (props) => {
+  const {children} = props;
+  // return <div>{children}</div>;
+  return (
+    <div className="modalContainer">
+    <div className="blocks">
+      <img
+        className="seasonPicture"
+        src={seasonPicture}
+        alt="seasonPicture"
+      />
+    </div>
+    {children}
+  </div>
+);
 };
 
-export default modal;
+export default Modal;

@@ -1,56 +1,64 @@
 import React, { useState, useEffect } from "react";
-import { format, compareAsc } from "date-fns";
+import btnGoNext from "../assets/pictures/btnGoNext.png";
+import btnGoBack from "../assets/pictures/btnGoBack.png";
+import { isEmpty } from "lodash";
+
 import {
   getSeasonByDate,
   getNextSeason,
   forHowManyDays,
   InHowManyDays,
+  nbDaysOfSeason,
 } from "../utils/seasons";
 import Modal from "../components/Modal";
+import "../style/seasonStyle.css";
 
 const Season = () => {
   const currentDate = new Date();
+  const [currentSeason, setCurrentSeason] = useState({});
+  const [nextSeason, setNextSeason] = useState({});
+  const [isCurrent, setIsCurrent] = useState(true);
+  const toggle = () => {
+    setIsCurrent((current) => !current);
+  };
 
   useEffect(() => {
-    const currentSeason = getSeasonByDate(currentDate);
-    const nextSeason = getNextSeason(currentDate);
-
-    console.log(currentSeason);
-    console.log(forHowManyDays(currentSeason));
-
-    console.log(nextSeason);
-    console.log(InHowManyDays(currentDate, nextSeason.period.start));
-  }, [getSeasonByDate, currentDate]);
+    setCurrentSeason(getSeasonByDate(currentDate));
+    setNextSeason(getNextSeason(currentDate));
+  }, []);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <div
-        style={{
-          border: "1px solid black",
-          width: "100px",
-          height: "100px",
-        }}
-      >
-        test
-      </div>
+    <div className="pageContainer">
+      <Modal>
+        {!isEmpty(currentSeason) && !isEmpty(nextSeason) && (
+          <>
+            <div className="blocks">
+              <h1>{isCurrent ? currentSeason.title : nextSeason.title}</h1>
+              {/* <p>{!isCurrent && nbDaysOfSeason(nextSeason)}</p> */}
+
+              <p>{isCurrent ? "depuis" : "dans"}</p>
+              <p>
+                {isCurrent
+                  ? `${forHowManyDays(currentDate, currentSeason)} jours`
+                  : `${InHowManyDays(
+                      currentDate,
+                      nextSeason.period.start
+                    )} jours`}
+              </p>
+            </div>
+            <div className="blocks">
+              <img
+                className="btnPicture"
+                src={isCurrent ? btnGoNext : btnGoBack}
+                alt="btnPicture"
+                onClick={toggle}
+              />
+            </div>
+          </>
+        )}
+      </Modal>
     </div>
   );
 };
-{
-  /* <Modal
-        styled={{
-          border: "1px solid black",
-          width: "100px",
-          height: "100px",
-        }}
-      >
-        test
-      </Modal> */
-}
+
 export default Season;
